@@ -41,17 +41,6 @@
             position: relative;
         }
 
-        /* Water Drops Canvas - Full Page Background */
-        #water-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
         /* Ripple Effect */
         .ripple {
             position: fixed;
@@ -908,7 +897,7 @@
     </style>
 </head>
 <body>
-    <canvas id="water-canvas"></canvas>
+    <canvas id="drops" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:1;"></canvas>
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -1117,132 +1106,73 @@
     </footer>
 
     <script>
-        // Real Water Drops Animation
-        const canvas = document.getElementById('water-canvas');
-        const ctx = canvas.getContext('2d');
-        let drops = [];
-        let splashes = [];
-        const DROP_COUNT = 35;
+const c = document.getElementById('drops');
+const x = c.getContext('2d');
+c.width = window.innerWidth;
+c.height = window.innerHeight;
+window.addEventListener('resize', () => { c.width = window.innerWidth; c.height = window.innerHeight; });
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = document.documentElement.scrollHeight;
-        }
+const drops = Array.from({length: 35}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  r: Math.random() * 4 + 2,
+  speed: Math.random() * 2.5 + 1,
+  opacity: Math.random() * 0.35 + 0.2,
+  trail: []
+}));
 
-        function createDrop(resetY = true) {
-            return {
-                x: Math.random() * canvas.width,
-                y: resetY ? -20 - Math.random() * 100 : Math.random() * canvas.height,
-                radius: Math.random() * 5 + 2,
-                speed: Math.random() * 2 + 1.5,
-                opacity: Math.random() * 0.25 + 0.2,
-                wobble: Math.random() * 0.5,
-                wobbleSpeed: Math.random() * 0.02 + 0.01,
-                trail: []
-            };
-        }
+function splash(px, py, pr) {
+  let size = 0;
+  let op = 0.5;
+  const grow = setInterval(() => {
+    x.beginPath();
+    x.arc(px, py, size, 0, Math.PI * 2);
+    x.strokeStyle = `rgba(45,125,210,${op})`;
+    x.lineWidth = 1;
+    x.stroke();
+    size += 2;
+    op -= 0.05;
+    if (op <= 0) clearInterval(grow);
+  }, 20);
+}
 
-        function createSplash(x, y) {
-            return {
-                x: x,
-                y: y,
-                radius: 3,
-                maxRadius: 25 + Math.random() * 15,
-                opacity: 0.4,
-                speed: 1.5
-            };
-        }
+function draw() {
+  x.clearRect(0, 0, c.width, c.height);
+  drops.forEach(d => {
+    // Trail
+    d.trail.forEach((t, i) => {
+      x.beginPath();
+      x.arc(t.x, t.y, d.r * 0.4, 0, Math.PI * 2);
+      x.fillStyle = `rgba(91,172,233,${(i / d.trail.length) * d.opacity * 0.4})`;
+      x.fill();
+    });
+    // Tropfen
+    x.beginPath();
+    x.ellipse(d.x, d.y, d.r * 0.7, d.r, 0, 0, Math.PI * 2);
+    x.fillStyle = `rgba(45,125,210,${d.opacity})`;
+    x.fill();
+    // Glanz
+    x.beginPath();
+    x.arc(d.x - d.r * 0.25, d.y - d.r * 0.3, d.r * 0.25, 0, Math.PI * 2);
+    x.fillStyle = `rgba(255,255,255,0.5)`;
+    x.fill();
+    // Bewegen
+    d.trail.push({x: d.x, y: d.y});
+    if (d.trail.length > 7) d.trail.shift();
+    d.y += d.speed;
+    if (d.y > c.height + 20) {
+      splash(d.x, c.height - 5, d.r);
+      d.y = -20;
+      d.x = Math.random() * c.width;
+      d.trail = [];
+    }
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+    </script>
 
-        // Initialize drops
-        for (let i = 0; i < DROP_COUNT; i++) {
-            drops.push(createDrop(false));
-        }
-
-        function updateDrops() {
-            drops.forEach(drop => {
-                // Store trail positions
-                drop.trail.unshift({ x: drop.x, y: drop.y, opacity: drop.opacity });
-                if (drop.trail.length > 6) {
-                    drop.trail.pop();
-                }
-
-                // Move drop
-                drop.y += drop.speed;
-                drop.x += Math.sin(drop.y * drop.wobbleSpeed) * drop.wobble;
-
-                // Reset when reaching bottom
-                if (drop.y > canvas.height + 20) {
-                    splashes.push(createSplash(drop.x, canvas.height - 5));
-                    Object.assign(drop, createDrop(true));
-                }
-            });
-
-            // Update splashes
-            splashes = splashes.filter(splash => {
-                splash.radius += splash.speed;
-                splash.opacity -= 0.02;
-                return splash.opacity > 0;
-            });
-        }
-
-        function drawDrops() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw drops
-            drops.forEach(drop => {
-                // Draw trail
-                drop.trail.forEach((point, i) => {
-                    const trailOpacity = point.opacity * (1 - i / drop.trail.length) * 0.5;
-                    const trailRadius = drop.radius * (1 - i / drop.trail.length) * 0.6;
-                    ctx.beginPath();
-                    ctx.arc(point.x, point.y, trailRadius, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(91, 172, 233, ${trailOpacity})`;
-                    ctx.fill();
-                });
-
-                // Draw drop body (ellipse - wider than tall)
-                ctx.beginPath();
-                ctx.ellipse(drop.x, drop.y, drop.radius * 0.8, drop.radius * 1.2, 0, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(45, 125, 210, ${drop.opacity})`;
-                ctx.fill();
-
-                // Draw highlight (white arc top-left)
-                ctx.beginPath();
-                ctx.arc(
-                    drop.x - drop.radius * 0.3,
-                    drop.y - drop.radius * 0.4,
-                    drop.radius * 0.35,
-                    Math.PI,
-                    Math.PI * 1.7
-                );
-                ctx.strokeStyle = `rgba(255, 255, 255, ${drop.opacity * 0.7})`;
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-            });
-
-            // Draw splashes
-            splashes.forEach(splash => {
-                ctx.beginPath();
-                ctx.arc(splash.x, splash.y, splash.radius, 0, Math.PI * 2);
-                ctx.strokeStyle = `rgba(45, 125, 210, ${splash.opacity})`;
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            });
-        }
-
-        function animate() {
-            updateDrops();
-            drawDrops();
-            requestAnimationFrame(animate);
-        }
-
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-        window.addEventListener('scroll', () => {
-            canvas.height = document.documentElement.scrollHeight;
-        });
-        animate();
-
+    <script>
         // Ripple Effect on Click
         document.addEventListener('click', (e) => {
             const ripple = document.createElement('div');
