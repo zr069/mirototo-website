@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miro Toto | Installateur- und Heizungsbauerhandwerk Saarbrücken</title>
+    <meta name="description" content="Miro Toto - Ihr Experte für Badsanierung, Heizungsbau, Wärmepumpen und Sanitärinstallation in Saarbrücken. Qualität aus Meisterhand.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --white: #FFFFFF;
+            --off-white: #F7FAFD;
+            --navy: #0A2540;
+            --navy-light: #1a3a5c;
+            --water-blue: #2D7DD2;
+            --water-light: #5BACE9;
+            --water-pale: #E8F4FD;
+            --text-muted: #546B82;
+            --border-light: rgba(45, 125, 210, 0.15);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--off-white);
+            color: var(--navy);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Canvas Background */
+        #water-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(45, 125, 210, 0.3) 0%, transparent 70%);
+            transform: scale(0);
+            animation: ripple-effect 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @keyframes ripple-effect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        /* Glassmorphism Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.75rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 30px rgba(10, 37, 64, 0.08);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--navy);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--water-blue), var(--water-light));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--navy);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--water-blue);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--navy);
+            color: var(--white) !important;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--water-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(45, 125, 210, 0.3);
+        }
+
+        .mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-toggle span {
+            width: 25px;
+            height: 2px;
+            background: var(--navy);
+            transition: all 0.3s ease;
+        }
+
+        /* Sections */
+        section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 0 6rem;
+            background: linear-gradient(180deg, var(--white) 0%, var(--off-white) 100%);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-content.revealed {
+            animation: reveal-up 0.8s ease forwards;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--water-pale);
+            color: var(--water-blue);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-title span {
+            color: var(--water-blue);
+        }
+
+        .hero-text {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--water-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(45, 125, 210, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--border-light);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--water-blue);
+            color: var(--water-blue);
+            transform: translateY(-3px);
+        }
+
+        /* Hero Card */
+        .hero-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 80px rgba(10, 37, 64, 0.1);
+            border: 1px solid var(--border-light);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-card.revealed {
+            animation: reveal-up 0.8s 0.2s ease forwards;
+        }
+
+        .hero-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .hero-card-title {
+            font-size: 1.5rem;
+            color: var(--navy);
+        }
+
+        .hero-card-badge {
+            background: linear-gradient(135deg, var(--water-blue), var(--water-light));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            animation: float 4s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+
+        .hero-services {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero-service-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: var(--off-white);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .hero-service-item:hover {
+            background: var(--water-pale);
+            transform: translateX(5px);
+        }
+
+        .hero-service-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--water-pale);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--water-blue);
+            font-size: 0.9rem;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--water-blue);
+        }
+
+        .hero-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 8rem 0;
+            background: var(--white);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            color: var(--water-blue);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .section-text {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--off-white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid transparent;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .service-card.revealed {
+            animation: reveal-up 0.6s ease forwards;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--water-blue), var(--water-light));
+            transition: width 0.4s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 60px rgba(10, 37, 64, 0.12);
+            border-color: var(--border-light);
+        }
+
+        .service-card:hover::before {
+            width: 100%;
+        }
+
+        .service-card.featured {
+            background: var(--navy);
+            color: var(--white);
+            grid-row: span 2;
+        }
+
+        .service-card.featured .service-icon {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--water-light);
+        }
+
+        .service-card.featured .service-title {
+            color: var(--white);
+        }
+
+        .service-card.featured .service-text {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--water-pale);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--water-blue);
+        }
+
+        .service-title {
+            font-size: 1.5rem;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .service-text {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .service-card.featured .service-features {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .service-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .service-feature-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(91, 172, 233, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--water-light);
+            font-size: 0.75rem;
+        }
+
+        /* Why Section */
+        .why {
+            padding: 8rem 0;
+            background: var(--off-white);
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .why-content {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .why-content.revealed {
+            animation: reveal-up 0.8s ease forwards;
+        }
+
+        .why-title {
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            color: var(--navy);
+            margin-bottom: 1.5rem;
+        }
+
+        .why-text {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .why-points {
+            list-style: none;
+        }
+
+        .why-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .why-point-icon {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            background: linear-gradient(135deg, var(--water-blue), var(--water-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+
+        .why-point-text {
+            font-size: 1rem;
+        }
+
+        .why-point-text strong {
+            color: var(--navy);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .why-point-text span {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .why-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .why-stats.revealed {
+            animation: reveal-up 0.8s 0.2s ease forwards;
+        }
+
+        .why-stat-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .why-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(10, 37, 64, 0.1);
+        }
+
+        .why-stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--water-blue);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .why-stat-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 8rem 0;
+            background: var(--white);
+        }
+
+        .contact-card {
+            background: var(--navy);
+            border-radius: 32px;
+            padding: 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .contact-card.revealed {
+            animation: reveal-up 0.8s ease forwards;
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(45, 125, 210, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .contact-cta {
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact-label {
+            color: var(--water-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .contact-title {
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            color: var(--white);
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-light {
+            background: var(--white);
+            color: var(--navy);
+        }
+
+        .btn-light:hover {
+            background: var(--water-light);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(91, 172, 233, 0.35);
+        }
+
+        .contact-info {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .contact-info-icon {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--water-light);
+            font-size: 1.25rem;
+        }
+
+        .contact-info-content h4 {
+            color: var(--white);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-info-content p,
+        .contact-info-content a {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-info-content a:hover {
+            color: var(--water-light);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--navy);
+            padding: 4rem 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            color: var(--white);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--water-light);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-social a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover {
+            background: var(--water-blue);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes reveal-up {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .service-card.featured {
+                grid-row: auto;
+                grid-column: span 2;
+            }
+
+            .why-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .contact-card {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .mobile-toggle {
+                display: flex;
+            }
+
+            .mobile-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .mobile-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .mobile-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+
+            .hero {
+                padding: 7rem 0 4rem;
+            }
+
+            .hero-services {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-card.featured {
+                grid-column: auto;
+            }
+
+            .why-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .contact-card {
+                padding: 2.5rem;
+                border-radius: 24px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1.25rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-card {
+                padding: 1.75rem;
+            }
+
+            .why-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="water-canvas"></canvas>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">&#128167;</span>
+                Miro Toto
+            </a>
+            <ul class="nav-links">
+                <li><a href="#services">Leistungen</a></li>
+                <li><a href="#why">Über uns</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+                <li><a href="tel:+4968140102049" class="nav-cta">Jetzt anrufen</a></li>
+            </ul>
+            <div class="mobile-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        &#9733; Meisterbetrieb aus Saarbrücken
+                    </div>
+                    <h1 class="hero-title">
+                        Installateur- & Heizungsbauer<span>handwerk</span>
+                    </h1>
+                    <p class="hero-text">
+                        Qualität, Zuverlässigkeit und Fachwissen – von der Badsanierung bis zur Wärmepumpe.
+                        Ihr Partner für alle Installationen rund um Wasser und Wärme.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="tel:+4968140102049" class="btn btn-primary">
+                            &#128222; Kostenlose Beratung
+                        </a>
+                        <a href="#services" class="btn btn-secondary">
+                            Leistungen entdecken
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-card">
+                    <div class="hero-card-header">
+                        <h3 class="hero-card-title">Unsere Expertise</h3>
+                        <span class="hero-card-badge">10+ Leistungen</span>
+                    </div>
+                    <div class="hero-services">
+                        <div class="hero-service-item">
+                            <span class="hero-service-icon">&#128705;</span>
+                            Badsanierung
+                        </div>
+                        <div class="hero-service-item">
+                            <span class="hero-service-icon">&#9855;</span>
+                            Barrierefreies Bad
+                        </div>
+                        <div class="hero-service-item">
+                            <span class="hero-service-icon">&#128293;</span>
+                            Heizungsbau
+                        </div>
+                        <div class="hero-service-item">
+                            <span class="hero-service-icon">&#127793;</span>
+                            Wärmepumpen
+                        </div>
+                        <div class="hero-service-item">
+                            <span class="hero-service-icon">&#128167;</span>
+                            Rohrreinigung
+                        </div>
+                        <div class="hero-service-item">
+                            <span class="hero-service-icon">&#128295;</span>
+                            Sanitärinstallation
+                        </div>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">15+</div>
+                            <div class="hero-stat-label">Jahre Erfahrung</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">500+</div>
+                            <div class="hero-stat-label">Projekte</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">100%</div>
+                            <div class="hero-stat-label">Zufriedenheit</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Unsere Leistungen</span>
+                <h2 class="section-title">Kompetenz in allen Bereichen</h2>
+                <p class="section-text">
+                    Von der kleinen Reparatur bis zur kompletten Badsanierung –
+                    wir sind Ihr zuverlässiger Partner für alle Installationen.
+                </p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card featured">
+                    <div class="service-icon">&#128705;</div>
+                    <h3 class="service-title">Badsanierung & Barrierefreies Bad</h3>
+                    <p class="service-text">
+                        Verwandeln Sie Ihr Badezimmer in eine Wohlfühloase.
+                        Wir planen und realisieren Ihre Traumvorstellung –
+                        von modern bis barrierefrei.
+                    </p>
+                    <div class="service-features">
+                        <div class="service-feature">
+                            <span class="service-feature-icon">&#10003;</span>
+                            Komplettplanung & 3D-Visualisierung
+                        </div>
+                        <div class="service-feature">
+                            <span class="service-feature-icon">&#10003;</span>
+                            Hochwertige Materialien
+                        </div>
+                        <div class="service-feature">
+                            <span class="service-feature-icon">&#10003;</span>
+                            Termingerechte Ausführung
+                        </div>
+                        <div class="service-feature">
+                            <span class="service-feature-icon">&#10003;</span>
+                            Barrierefreie Lösungen
+                        </div>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#128293;</div>
+                    <h3 class="service-title">Heizungsbau</h3>
+                    <p class="service-text">
+                        Effiziente Heizsysteme für Ihr Zuhause.
+                        Wir beraten, installieren und warten Ihre Heizungsanlage.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#127793;</div>
+                    <h3 class="service-title">Wärmepumpen</h3>
+                    <p class="service-text">
+                        Nachhaltig heizen mit erneuerbarer Energie.
+                        Profitieren Sie von staatlicher Förderung und niedrigen Betriebskosten.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#128167;</div>
+                    <h3 class="service-title">Rohrreinigung</h3>
+                    <p class="service-text">
+                        Verstopfungen schnell und professionell beseitigt.
+                        24/7 Notdienst für dringende Fälle verfügbar.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#128295;</div>
+                    <h3 class="service-title">Sanitäranlagen</h3>
+                    <p class="service-text">
+                        Installation, Reparatur und Wartung aller Sanitäreinrichtungen.
+                        Von der Armatur bis zur kompletten Anlage.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Section -->
+    <section class="why" id="why">
+        <div class="container">
+            <div class="why-grid">
+                <div class="why-content">
+                    <span class="section-label">Warum Miro Toto?</span>
+                    <h2 class="why-title">Handwerk aus Leidenschaft</h2>
+                    <p class="why-text">
+                        Als Meisterbetrieb aus Saarbrücken stehen wir für höchste Qualität,
+                        faire Preise und absolute Zuverlässigkeit.
+                    </p>
+                    <ul class="why-points">
+                        <li class="why-point">
+                            <span class="why-point-icon">&#10003;</span>
+                            <div class="why-point-text">
+                                <strong>Meisterqualität</strong>
+                                <span>Ausgebildete Fachkräfte mit jahrelanger Erfahrung</span>
+                            </div>
+                        </li>
+                        <li class="why-point">
+                            <span class="why-point-icon">&#10003;</span>
+                            <div class="why-point-text">
+                                <strong>Faire Festpreise</strong>
+                                <span>Transparente Kostenvoranschläge ohne versteckte Kosten</span>
+                            </div>
+                        </li>
+                        <li class="why-point">
+                            <span class="why-point-icon">&#10003;</span>
+                            <div class="why-point-text">
+                                <strong>Termingarantie</strong>
+                                <span>Pünktliche Ausführung aller vereinbarten Arbeiten</span>
+                            </div>
+                        </li>
+                        <li class="why-point">
+                            <span class="why-point-icon">&#10003;</span>
+                            <div class="why-point-text">
+                                <strong>Regionale Verbundenheit</strong>
+                                <span>Schnell vor Ort im gesamten Saarland</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="why-stats">
+                    <div class="why-stat-card">
+                        <div class="why-stat-number">15+</div>
+                        <div class="why-stat-label">Jahre Erfahrung</div>
+                    </div>
+                    <div class="why-stat-card">
+                        <div class="why-stat-number">500+</div>
+                        <div class="why-stat-label">Zufriedene Kunden</div>
+                    </div>
+                    <div class="why-stat-card">
+                        <div class="why-stat-number">24h</div>
+                        <div class="why-stat-label">Notdienst</div>
+                    </div>
+                    <div class="why-stat-card">
+                        <div class="why-stat-number">100%</div>
+                        <div class="why-stat-label">Meisterqualität</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-card">
+                <div class="contact-cta">
+                    <span class="contact-label">Kontakt aufnehmen</span>
+                    <h2 class="contact-title">Bereit für Ihr Projekt?</h2>
+                    <p class="contact-text">
+                        Lassen Sie uns gemeinsam Ihre Ideen verwirklichen.
+                        Rufen Sie uns an oder schreiben Sie uns –
+                        wir freuen uns auf Sie!
+                    </p>
+                    <a href="tel:+4968140102049" class="btn btn-light">
+                        &#128222; Jetzt anrufen
+                    </a>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">&#128205;</div>
+                        <div class="contact-info-content">
+                            <h4>Adresse</h4>
+                            <p>Hohenzollernstr. 124<br>66117 Saarbrücken</p>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">&#128222;</div>
+                        <div class="contact-info-content">
+                            <h4>Telefon</h4>
+                            <a href="tel:+4968140102049">+49 681 40102049</a>
+                        </div>
+                    </div>
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">&#128337;</div>
+                        <div class="contact-info-content">
+                            <h4>Öffnungszeiten</h4>
+                            <p>Mo - Fr: 08:00 - 18:00 Uhr<br>Sa: Nach Vereinbarung</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <a href="#" class="footer-logo">
+                    <span class="logo-icon">&#128167;</span>
+                    Miro Toto
+                </a>
+                <ul class="footer-links">
+                    <li><a href="#services">Leistungen</a></li>
+                    <li><a href="#why">Über uns</a></li>
+                    <li><a href="#contact">Kontakt</a></li>
+                    <li><a href="#">Impressum</a></li>
+                    <li><a href="#">Datenschutz</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Miro Toto Installateur- und Heizungsbauerhandwerk. Alle Rechte vorbehalten.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">&#9679;</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Water Canvas Animation
+        const canvas = document.getElementById('water-canvas');
+        const ctx = canvas.getContext('2d');
+        let drops = [];
+        let animationId;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function createDrop() {
+            return {
+                x: Math.random() * canvas.width,
+                y: -20,
+                radius: Math.random() * 3 + 1,
+                speed: Math.random() * 2 + 1,
+                opacity: Math.random() * 0.3 + 0.1,
+                trail: []
+            };
+        }
+
+        function updateDrops() {
+            for (let i = drops.length - 1; i >= 0; i--) {
+                const drop = drops[i];
+
+                // Add current position to trail
+                drop.trail.push({ x: drop.x, y: drop.y, opacity: drop.opacity });
+                if (drop.trail.length > 8) {
+                    drop.trail.shift();
+                }
+
+                drop.y += drop.speed;
+                drop.x += Math.sin(drop.y * 0.02) * 0.3;
+
+                if (drop.y > canvas.height + 20) {
+                    drops.splice(i, 1);
+                }
+            }
+
+            // Add new drops
+            if (drops.length < 50 && Math.random() < 0.1) {
+                drops.push(createDrop());
+            }
+        }
+
+        function drawDrops() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            drops.forEach(drop => {
+                // Draw trail
+                drop.trail.forEach((point, index) => {
+                    const trailOpacity = (index / drop.trail.length) * point.opacity * 0.5;
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, drop.radius * 0.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(45, 125, 210, ${trailOpacity})`;
+                    ctx.fill();
+                });
+
+                // Draw drop
+                ctx.beginPath();
+                ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(91, 172, 233, ${drop.opacity})`;
+                ctx.fill();
+
+                // Highlight
+                ctx.beginPath();
+                ctx.arc(drop.x - drop.radius * 0.3, drop.y - drop.radius * 0.3, drop.radius * 0.3, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${drop.opacity * 0.5})`;
+                ctx.fill();
+            });
+        }
+
+        function animate() {
+            updateDrops();
+            drawDrops();
+            animationId = requestAnimationFrame(animate);
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        animate();
+
+        // Ripple Effect on Click
+        document.addEventListener('click', (e) => {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.left = e.clientX - 50 + 'px';
+            ripple.style.top = e.clientY - 50 + 'px';
+            ripple.style.width = '100px';
+            ripple.style.height = '100px';
+            document.body.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 800);
+        });
+
+        // Navbar Scroll Effect
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Navigation
+        const mobileToggle = document.querySelector('.mobile-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileToggle.addEventListener('click', () => {
+            mobileToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile nav on link click
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('revealed');
+                    }, index * 100);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        document.querySelectorAll('.hero-content, .hero-card, .service-card, .why-content, .why-stats, .contact-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
